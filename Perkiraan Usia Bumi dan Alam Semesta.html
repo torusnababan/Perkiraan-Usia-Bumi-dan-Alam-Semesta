@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA: Perkiraan Usia Bumi dan Alam Semesta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+        .header-main-title {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .author-info {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .author-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .author-info p:first-child {
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+        .header-image {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        .left-header-image {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        h2 {
+            color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        #timeLimitDisplay {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-top: 50px;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            display: none;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .cooldown-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #d9534f;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #d9534f;
+            border-radius: 5px;
+            background-color: #ffe0e0;
+        }
+        @media (max-width: 600px) {
+            .header-image, .left-header-image {
+                position: static;
+                margin: 10px auto;
+                display: block;
+            }
+            .header-main-title, .author-info {
+                text-align: center;
+            }
+            .container {
+                position: static;
+            }
+            #timeLimitDisplay {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-main-title">
+            <h1>Kuis IPA: Perkiraan Usia Bumi dan Alam Semesta</h1>
+        </div>
+        <div class="author-info">
+            <p>By. Torus Manuntun Nababan, S.Pd.,M.Pd</p>
+            <p>(Pengembang Soal Kuis)</p>
+        </div>
+        <img src="logo.png" alt="Foto Torus Manuntun Nababan, S.Pd.,M.Pd" class="header-image">
+        <img src="jas.jpg" alt="Ilustrasi Jas" class="left-header-image">
+
+        <p id="timeLimitDisplay">Waktu pengerjaan: <span id="timeLimit">30</span> menit</p>
+        <div id="timer">Waktu tersisa: 30:00</div>
+
+        <form id="quizForm">
+            <h2>Identitas Siswa</h2>
+            <div class="form-group">
+                <label for="sekolah">Nama Sekolah:</label>
+                <input type="text" id="sekolah" name="sekolah" required>
+            </div>
+            <div class="form-group">
+                <label for="nama">Nama Siswa:</label>
+                <input type="text" id="nama" name="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" name="kelas" required>
+            </div>
+            <div class="form-group">
+                <label for="semester">Semester:</label>
+                <select id="semester" name="semester" required>
+                    <option value="">Pilih Semester</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tahunAjaran">Tahun Ajaran:</label>
+                <input type="text" id="tahunAjaran" name="tahunAjaran" placeholder="Contoh: 2024/2025" required>
+            </div>
+
+            <hr>
+
+            <h2>Soal Kuis</h2>
+            <div id="questionsContainer">
+                </div>
+
+            <button type="submit">Selesai Kuis</button>
+        </form>
+
+        <div id="results">
+            <h2>Hasil Kuis</h2>
+            <p><strong>Nama Siswa:</strong> <span id="resultNama"></span></p>
+            <p><strong>Skor Anda:</strong> <span id="score"></span></p>
+            <p id="message"></p>
+            <h3>Detail Jawaban:</h3>
+            <div id="answerDetails">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Teori Big Bang (Pengantar) (10 soal)
+            {
+                topic: "Teori Big Bang",
+                question: "Teori yang menjelaskan bagaimana alam semesta dimulai dari ledakan besar disebut...",
+                options: ["Teori Bumi Datar", "Teori Big Bang", "Teori Evolusi", "Teori Gravitasi"],
+                answer: "Teori Big Bang"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Menurut Teori Big Bang, alam semesta terus-menerus...",
+                options: ["Menyusut", "Berhenti", "Mengembang", "Berputar"],
+                answer: "Mengembang"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Usia alam semesta diperkirakan sekitar...",
+                options: ["1 juta tahun", "4,5 miliar tahun", "13,8 miliar tahun", "100 tahun"],
+                answer: "13,8 miliar tahun"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Pada awalnya, semua materi dan energi di alam semesta berada dalam satu titik yang sangat panas dan padat. Ini disebut...",
+                options: ["Lubang Hitam", "Singularitas", "Komet", "Galaksi"],
+                answer: "Singularitas"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Salah satu bukti bahwa alam semesta mengembang adalah pergeseran warna cahaya bintang menjauhi kita. Ini disebut...",
+                options: ["Pergeseran Merah (Redshift)", "Pergeseran Biru", "Pergeseran Hijau", "Efek Doppler"],
+                answer: "Pergeseran Merah (Redshift)"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Radiasi sisa dari Big Bang yang masih bisa dideteksi oleh para ilmuwan disebut...",
+                options: ["Sinar Matahari", "Sinar-X", "Radiasi Kosmik Latar Belakang (CMB)", "Gelombang radio"],
+                answer: "Radiasi Kosmik Latar Belakang (CMB)"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Setelah Big Bang, alam semesta sangat panas dan mulai mendingin.",
+                options: ["Benar", "Salah", "Alam semesta tetap panas", "Suhu tidak berubah"],
+                answer: "Benar"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Bumi dan tata surya kita terbentuk jauh setelah peristiwa Big Bang terjadi.",
+                options: ["Benar", "Salah", "Bumi terbentuk sebelum Big Bang", "Bumi terbentuk bersamaan"],
+                answer: "Benar"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Ilmuwan menggunakan pengamatan terhadap galaksi dan bintang untuk memperkirakan usia alam semesta.",
+                options: ["Benar", "Salah", "Menggunakan fosil di Bumi", "Menggunakan pohon"],
+                answer: "Benar"
+            },
+            {
+                topic: "Teori Big Bang",
+                question: "Apakah Teori Big Bang menjelaskan apa yang terjadi 'sebelum' ledakan?",
+                options: ["Ya", "Tidak", "Hanya menjelaskan setelah ledakan", "Itu tidak relevan"],
+                answer: "Hanya menjelaskan setelah ledakan"
+            },
+
+            // Evolusi bintang dan galaksi (10 soal)
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Kumpulan gas dan debu raksasa di ruang angkasa tempat bintang-bintang baru terbentuk disebut...",
+                options: ["Planet", "Asteroid", "Galaksi", "Nebula"],
+                answer: "Nebula"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Bintang seperti Matahari kita terbentuk di dalam nebula.",
+                options: ["Benar", "Salah", "Bintang terbentuk di Bumi", "Bintang terbentuk di Bulan"],
+                answer: "Benar"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Apa yang membuat bintang bersinar dan panas?",
+                options: ["Pembakaran kayu", "Reaksi kimia", "Reaksi nuklir (fusi) di intinya", "Gesekan gas"],
+                answer: "Reaksi nuklir (fusi) di intinya"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Matahari kita saat ini berada pada tahap kehidupan yang stabil.",
+                options: ["Benar", "Salah", "Matahari sedang mati", "Matahari baru terbentuk"],
+                answer: "Benar"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Galaksi adalah kumpulan besar yang terdiri dari miliaran bintang, gas, debu, dan materi gelap.",
+                options: ["Benar", "Salah", "Galaksi hanya terdiri dari planet", "Galaksi hanya satu bintang"],
+                answer: "Benar"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Galaksi tempat kita tinggal (Bumi) disebut...",
+                options: ["Andromeda", "Bima Sakti (Milky Way)", "Pinwheel", "Sombrero"],
+                answer: "Bima Sakti (Milky Way)"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Galaksi memiliki beberapa bentuk. Yang paling umum adalah spiral, elips, dan...",
+                options: ["Segitiga", "Persegi", "Tidak Beraturan (Irregular)", "Lingkaran"],
+                answer: "Tidak Beraturan (Irregular)"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Bintang yang sangat besar dapat mengakhiri hidupnya dengan ledakan dahsyat yang disebut...",
+                options: ["Meteor", "Gerhana", "Supernova", "Komet"],
+                answer: "Supernova"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Setelah supernova, jika bintang sangat masif, ia dapat menjadi...",
+                options: ["Planet", "Nebula", "Lubang Hitam (Black Hole)", "Bulan"],
+                answer: "Lubang Hitam (Black Hole)"
+            },
+            {
+                topic: "Evolusi Bintang dan Galaksi",
+                question: "Galaksi terus bergerak dan menjauh satu sama lain seiring dengan mengembangnya alam semesta.",
+                options: ["Benar", "Salah", "Galaksi selalu diam", "Galaksi saling mendekat"],
+                answer: "Benar"
+            }
+        ];
+
+        const timeLimitInMinutes = 30; 
+        let timeLeft = timeLimitInMinutes * 60; // seconds
+        let timerInterval;
+
+        const quizForm = document.getElementById('quizForm');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const timerDisplay = document.getElementById('timer');
+        const resultsDiv = document.getElementById('results');
+        const resultNama = document.getElementById('resultNama');
+        const scoreDisplay = document.getElementById('score');
+        const messageDisplay = document.getElementById('message');
+        const answerDetailsDiv = document.getElementById('answerDetails');
+
+        // Durasi cooldown: 1 jam dalam milidetik
+        const cooldownDuration = 60 * 60 * 1000;
+        const lastQuizCompletionKey = 'lastQuizCompletionTime';
+
+        // Fungsi untuk mengacak array (algoritma Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Fungsi untuk menghasilkan dan menampilkan pertanyaan
+        function generateQuestions() {
+            // Pastikan jumlah soal adalah 20
+            if (questions.length !== 20) {
+                console.error("Jumlah soal tidak sesuai (harus 20).");
+            }
+            
+            shuffleArray(questions);
+            questionsContainer.innerHTML = '';
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const shuffledOptions = [...q.options];
+                shuffleArray(shuffledOptions);
+
+                questionDiv.innerHTML = `
+                    <p>${index + 1}. ${q.question}</p>
+                    <div class="options">
+                        ${shuffledOptions.map((option) => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${option}"> ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `Waktu tersisa: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu habis! Kuis akan otomatis disubmit.");
+                    quizForm.dispatchEvent(new Event('submit'));
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Penanganan saat formulir disubmit
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearInterval(timerInterval);
+
+            let totalScore = 0;
+            const pointsPerCorrect = 5; // 5 poin per soal
+            const maxPossibleScore = questions.length * pointsPerCorrect; // 20 * 5 = 100
+
+            const answers = {};
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                answers[`q${index}`] = userAnswer;
+
+                if (userAnswer === q.answer) {
+                    totalScore += pointsPerCorrect;
+                }
+            });
+
+            // Simpan waktu penyelesaian kuis ke Local Storage
+            localStorage.setItem(lastQuizCompletionKey, Date.now());
+
+            // Tampilkan hasil
+            resultNama.textContent = document.getElementById('nama').value;
+            scoreDisplay.textContent = `${totalScore} / ${maxPossibleScore}`;
+
+            // Tentukan pesan berdasarkan skor
+            // Nilai Pemenang ditentukan oleh skor >= 70
+            if (totalScore >= 70) { 
+                messageDisplay.textContent = "Selamat Anda Pemenang";
+                messageDisplay.style.color = "green";
+            } else {
+                messageDisplay.textContent = "Anda Belum Beruntung, Belajar Lagi Ya";
+                messageDisplay.style.color = "red";
+            }
+
+            // Tampilkan detail jawaban
+            answerDetailsDiv.innerHTML = '';
+            questions.forEach((q, index) => {
+                const userAnswer = answers[`q${index}`];
+                const detailDiv = document.createElement('p');
+                let answerStatusClass = '';
+                let userAnswerText = userAnswer !== null ? userAnswer : 'Tidak dijawab';
+
+                if (userAnswer === q.answer) {
+                    answerStatusClass = 'correct';
+                } else if (userAnswer !== null) {
+                    answerStatusClass = 'incorrect';
+                } else {
+                    answerStatusClass = '';
+                }
+
+                detailDiv.innerHTML = `
+                    <strong>${index + 1}. ${q.question}</strong><br>
+                    Jawaban Anda: <span class="${answerStatusClass}">
+                        ${userAnswerText}
+                    </span><br>
+                    Kunci Jawaban: <span class="correct">${q.answer}</span>
+                `;
+                answerDetailsDiv.appendChild(detailDiv);
+            });
+
+            quizForm.style.display = 'none';
+            resultsDiv.style.display = 'block';
+        });
+
+        // Inisialisasi kuis dan cek cooldown saat halaman dimuat
+        window.onload = function() {
+            const lastCompletionTime = localStorage.getItem(lastQuizCompletionKey);
+            if (lastCompletionTime) {
+                const timeElapsed = Date.now() - parseInt(lastCompletionTime);
+                if (timeElapsed < cooldownDuration) {
+                    const remainingTime = cooldownDuration - timeElapsed;
+                    const minutes = Math.floor(remainingTime / (1000 * 60));
+                    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                    quizForm.style.display = 'none';
+                    timerDisplay.style.display = 'none';
+                    document.getElementById('timeLimitDisplay').style.display = 'none';
+                    const cooldownMessageDiv = document.createElement('div');
+                    cooldownMessageDiv.classList.add('cooldown-message');
+                    cooldownMessageDiv.innerHTML = `
+                        Anda telah menyelesaikan kuis ini. <br>
+                        Silakan coba lagi dalam **${minutes.toString().padStart(2, '0')} menit dan ${seconds.toString().padStart(2, '0')} detik**.
+                    `;
+                    document.querySelector('.container').insertBefore(cooldownMessageDiv, document.getElementById('quizForm'));
+                    return;
+                }
+            }
+            // Jika tidak ada cooldown atau cooldown sudah berakhir, inisialisasi kuis
+            generateQuestions();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
